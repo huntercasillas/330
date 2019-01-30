@@ -92,3 +92,4 @@
       (if (equal? (first lst) target)
           index
           (find-item-aux (rest lst) target (+ 1 index)))))
+
