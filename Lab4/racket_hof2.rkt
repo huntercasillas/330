@@ -40,3 +40,4 @@
                     new-sin
                     (list number? symbol?))
                    (list 0 'radians)))
+
