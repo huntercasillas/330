@@ -55,3 +55,4 @@
 ;;; curry2 ;;;
 (define (((curry2 func) parameter1) parameter2)
   (func parameter1 parameter2))
+
