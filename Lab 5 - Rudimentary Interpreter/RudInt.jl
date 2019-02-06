@@ -70,10 +70,7 @@ end
 
 function parse( expr::Array{Any} )
 	# Check for Unary Operation
-	if length( expr ) != 2 && length( expr ) != 3
-		throw( LispError( "Error. Invalid expression." ) )
-
-	elseif length( expr ) == 2
+	if length( expr ) == 2
 		operator = expr[1]
 		number = parse( expr[2] )
 
@@ -81,7 +78,7 @@ function parse( expr::Array{Any} )
 			return UnopNode( opDict[:-], number )
 		elseif operator == :collatz
 			return UnopNode( opDict[:collatz], number )
-		elseif operator !- :- && operator != :collatz
+		elseif operator != :- && operator != :collatz
 			throw( LispError( "Error. Invalid operator type.") )
 		end
 
@@ -100,7 +97,7 @@ function parse( expr::Array{Any} )
 		elseif operator == :/
 			return BinopNode(opDict[:/], lhs, rhs )
 		elseif operator == :mod
-			return BinopNode(opDict[:mod], lhs, rhs )
+				return BinopNode(opDict[:mod], lhs, rhs )
 		elseif operator == :collatz
 			throw( LispError( "Error. Use collatz with a single number.") )
 		elseif operator != :+ && operator != :- && operator != :* && operator != :/ && operator != :mod
@@ -131,6 +128,8 @@ function calc( ast::BinopNode )
 
 	if operator == opDict[:/] && rhs == 0
 		throw( LispError( "Error. You cannot divide by zero." ) )
+	elseif operator == opDict[:mod] && rhs == 0
+		throw( LispError( "Error. You cannot mod by zero." ) )
 	else
     	return operator( lhs, rhs )
 	end
