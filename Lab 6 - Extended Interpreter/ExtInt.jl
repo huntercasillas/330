@@ -179,6 +179,11 @@ function parse( expr::Array{Any} )
 			expr2 = expr[2]
 			withDict = Dict{Symbol, AE}()
 
+			# Check for invalid type in expr[2]
+			if !isa( expr2, Array{Any} )
+				throw( LispError( "Error. Invalid type. Must be an Array." ) )
+			end
+
 			# Throws error for “(with (x 2) (+ x x))”
 			# Allows “(with ((x 2)) (+ x x))”
 			# Allows "(with () (+ 4 5))"
@@ -214,6 +219,11 @@ function parse( expr::Array{Any} )
 		elseif key == :lambda
 			expr2 = expr[2]
 			lambdaDict = Dict{Symbol, Symbol}()
+
+			# Check for invalid type in expr[2]
+			if !isa( expr2, Array{Any} )
+				throw( LispError( "Error. Invalid type. Must be an Array." ) )
+			end
 
 			if length( expr2 ) > 1
 				for i = 1 : length( expr2 )
