@@ -280,12 +280,12 @@ function calc( ast::BinopNode, env::Environment )
     rhs = calc( ast.rhs, env )
 
 	# Check for invalid use of operators
-	if operator == keyDict[:/] && rhs.n == 0
-		throw( LispError( "Error. You cannot divide by zero." ) )
+	if typeof( lhs ) != NumVal || typeof( rhs ) != NumVal
+		throw( LispError( "Error. Invalid type. Must be NumVal." ) )
 	elseif operator == keyDict[:mod] && rhs.n == 0
 		throw( LispError( "Error. You cannot mod by zero." ) )
-	elseif typeof( lhs ) != NumVal || typeof( rhs ) != NumVal
-		throw( LispError( "Error. Invalid type. Must be NumVal." ) )
+	elseif operator == keyDict[:/] && rhs.n == 0
+		throw( LispError( "Error. You cannot divide by zero." ) )
 	else
     	return NumVal( operator( lhs.n, rhs.n ) )
 	end
