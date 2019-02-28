@@ -91,6 +91,8 @@ solve:-
 
 		% Ms. Gross isn't the woman who is going camping.
     \+ member([gross, _, _, camping], Quads),
+		(member([appleton, _, _, camping], Quads);
+  	 member([parnell, _, _, camping], Quads)),
 
 		% One woman is going antiquing on her vacation.
     (member([appleton, _, _, antiquing], Quads);
