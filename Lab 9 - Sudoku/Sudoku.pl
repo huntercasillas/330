@@ -152,7 +152,7 @@ printBoard([Head|Tail]) :-
         write(Head), nl,
         printBoard(Tail).
 
-test1:-
+test1(Board) :-
         Board = [[2, _, _, _, 8, 7, _, 5, _],
                  [_, _, _, _, 3, 4, 9, _, 2],
                  [_, _, 5, _, _, _, _, _, 8],
@@ -165,7 +165,7 @@ test1:-
         solve(Board),
         printBoard(Board).
 
-test2:-
+test2(Board) :-
         Board = [[_, _, _, 7, 9, _, 8, _, _],
                  [_, _, _, _, _, 4, 3, _, 7],
                  [_, _, _, 3, _, _, _, 2, 9],
