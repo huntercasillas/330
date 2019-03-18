@@ -5,12 +5,12 @@
 defmodule Elixir_Intro do
 
 	# Fibonacci Functions
-	def fib(1) do
-		1
-	end
-
 	def fib(0) do
 		0
+	end
+
+	def fib(1) do
+		1
 	end
 
 	def fib(n) do
