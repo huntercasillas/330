@@ -1,3 +1,7 @@
+# Hunter Casillas
+# CS 330
+# Elixir Data Center
+
 defmodule Database do
   use GenServer
 
@@ -29,7 +33,6 @@ defmodule Database do
     {:reply, :ok, state}
   end
 
-
   def handle_cast(_request, state) do
     #check Depends (none)
     {:noreply, state}
@@ -40,9 +43,6 @@ defmodule Database do
     {:noreply, state}
   end
 end
-
-
-
 
 defmodule CustomerService do
   use GenServer
@@ -330,7 +330,6 @@ defmodule User do
     #checkDepends (none)
     {:noreply, state}
   end
-
 end
 
 defmodule Crasher do
@@ -344,5 +343,139 @@ defmodule Crasher do
 	Process.exit(pid, :kill)
     end
   end
-  
+end
+
+defmodule NameServer do
+  use GenServer
+
+  # Start Helper Functions (Don't Modify)
+  def start_link() do
+    GenServer.start_link(__MODULE__, [], [])
+  end
+
+  def start() do
+    GenServer.start(__MODULE__, [],  [])
+  end
+
+  def register(name_server, name) do
+    GenServer.call(name_server, {:register, name})
+  end
+
+  def register(name_server, name, pid) do
+    GenServer.cast(name_server, {:register, name, pid})
+  end
+
+  def resolve(name_server, name) do
+    GenServer.call(name_server, {:resolve, name})
+  end
+  #End Helper Functions
+
+  def init(_) do
+    #This would be a good place to start a new data structure for keeping pid names
+    map = Map.new()
+    {:ok, map}
+  end
+
+  def handle_call({:register, name}, {pid, _from}, map) do
+    #This will register the given name with the callers pid and return the caller
+    map = Map.put(map, name, pid)
+    {:reply, :ok, map}
+  end
+
+  def handle_call({:resolve, name}, {pid, _from}, map) do
+    #This will return to the caller the pid associated with name, or :error if no such pid can be found
+    if Map.has_key?(map, name) do
+      found_pid = Map.get(map, name)
+      {:reply, found_pid, map}
+    else
+      {:reply, :error, map}
+    end
+  end
+
+  def handle_cast({:register, name, pid}, map) do
+    #Register the given name to the given pid, no reply is expected
+    map = Map.put(map, name, pid)
+    {:noreply, map}
+  end
+
+  def handle_call(request, from, state) do
+    super(request, from, state)
+  end
+
+  def handle_cast(request, state) do
+    super(request, state)
+  end
+
+  def hande_info(_msg, state) do
+    {:noreply, state}
+  end
+end
+
+defmodule TopSupervisor do
+  use Supervisor
+
+  def start_link(ns) do
+    Supervisor.start_link(__MODULE__, ns )
+  end
+
+  def init(ns) do
+    children = [
+      worker(CustomerService, [ns]),
+      worker(SecondSupervisor, [ns])
+    ]
+
+    supervise(children, strategy: :one_for_one)
+  end
+end
+
+defmodule SecondSupervisor do
+  use Supervisor
+
+  def start_link(ns) do
+    Supervisor.start_link(__MODULE__, ns )
+  end
+
+  def init(ns) do
+    children = [
+      worker(Database, [ns]),
+      worker(ThirdSupervisor, [ns]),
+      worker(FourthSupervisor, [ns])
+    ]
+
+    supervise(children, strategy: :one_for_all)
+  end
+end
+
+defmodule ThirdSupervisor do
+  use Supervisor
+
+  def start_link(ns) do
+    Supervisor.start_link(__MODULE__, ns )
+  end
+
+  def init(ns) do
+    children = [
+      worker(Info, [ns]),
+      worker(Shipper, [ns])
+    ]
+
+    supervise(children, strategy: :one_for_one)
+  end
+end
+
+defmodule FourthSupervisor do
+  use Supervisor
+
+  def start_link(ns) do
+    Supervisor.start_link(__MODULE__, ns )
+  end
+
+  def init(ns) do
+    children = [
+      worker(User, [ns]),
+      worker(Order, [ns])
+    ]
+
+    supervise(children, strategy: :one_for_all)
+  end
 end
