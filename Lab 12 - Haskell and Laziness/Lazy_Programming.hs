@@ -27,7 +27,7 @@ iSqrt n = floor(sqrt(fromIntegral n))
 
 -- Computes the length of the longest common subsequence of two strings s1 and s1
 lcsLength :: String -> String -> Int
-lcsLength string1 string2 = a!(length1,length2)
+lcsLength string1 string2 = a!(length1, length2)
   where length1 = length string1
         length2 = length string2
         a = array ((0, 0), (length1, length2))
